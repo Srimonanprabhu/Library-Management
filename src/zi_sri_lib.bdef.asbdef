@@ -1,0 +1,60 @@
+managed implementation in class zbp_i_sri_lib unique;
+strict ( 2 );
+
+define behavior for ZI_SRI_LIB //alias <alias_name>
+persistent table zdbt_lib
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  create ( authorization : global );
+  update;
+  delete;
+  field ( readonly : update ) BookId;
+  association _Issue { create; }
+  mapping for zdbt_lib
+  { BookId             = book_id;
+    Title              = title;
+    Isbn               = isbn;
+    TotalBroCount      = total_bro_count;
+    LocalCreatedBy     = local_created_by;
+    LocalCreatedAt     = local_created_at;
+    LocalLastChangedBy = local_last_changed_by;
+    LocalLastChangedAt = local_last_changed_at;
+    LastChangedAt      = last_changed_at;
+    }
+}
+
+define behavior for ZI_SRI_LIB_ISSUE //alias <alias_name>
+persistent table zdbt_lib_issue
+lock dependent by _Book
+authorization dependent by _Book
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) IssueUuid,BookId;
+  validation validateDates
+  on save {
+  create; update;
+  }
+  determination calculateBorrowCount
+  on save
+   {
+    create;
+    }
+  association _Book;
+  mapping for zdbt_lib_issue
+  {
+  IssueUuid          = issue_uuid;
+  BookId             = book_id;
+  MemberId           = member_id;
+  IssueDate          = issue_date;
+  ReturnDate         = return_date;
+  LocalCreatedBy     = local_created_by;
+  LocalCreatedAt     = local_created_at;
+  LocalLastChangedBy = local_last_changed_by;
+  LocalLastChangedAt = local_last_changed_at;
+  LastChangedAt      = last_changed_at;
+}
+}

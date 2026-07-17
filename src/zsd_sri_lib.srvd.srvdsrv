@@ -1,0 +1,4 @@
+@EndUserText.label: 'Library service definition'
+define service ZSD_SRI_LIB {
+  expose ZC_SRI_LIB;
+}
